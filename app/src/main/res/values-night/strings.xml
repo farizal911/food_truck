@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="restaurant_app" translatable="false">Restaurant App</string>
+    <string name="italian_restaurants" translatable="false">Italian Restaurants</string>
+    <string name="chinese_restaurants" translatable="false">Chinese Restaurants</string>
+</resources>

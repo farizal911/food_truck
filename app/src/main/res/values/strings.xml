@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name" translatable="false">FOOD TRUCK APP</string>
+    <string name="title_activity_maps" translatable="false">MapsActivity</string>
+</resources>
