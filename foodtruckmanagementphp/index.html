@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Food Truck Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        nav {
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        .food-truck {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Food Truck Management</h1>
+    <nav>
+        <a href="index.html">Home</a> |
+        <a href="foodtrucks_list.html">View All Food Trucks</a> <!-- Link to the new file -->
+    </nav>
+
+    <h2>Add / Edit Food Truck</h2>
+    <form id="foodTruckForm">
+        <input type="hidden" id="truckId" name="id">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required><br><br>
+        <label for="image">Image:</label>
+        <input type="file" id="image" name="image"><br><br>
+        <label for="phoneNumber">Phone Number:</label>
+        <input type="text" id="phoneNumber" name="phoneNumber" required><br><br>
+        <label for="workingTime">Working Time:</label>
+        <input type="text" id="workingTime" name="workingTime" required><br><br>
+        <label for="closingDay">Closing Day:</label>
+        <input type="text" id="closingDay" name="closingDay" required><br><br>
+        <label for="state">State:</label>
+        <select id="state" name="state" required>
+            <option value="Perlis">Perlis</option>
+            <option value="Selangor">Selangor</option>
+            <option value="Johor">Johor</option>
+            <option value="Sabah">Sabah</option>
+        </select><br><br>
+        <button type="submit">Add / Update Food Truck</button>
+    </form>
+
+    <script>
+        document.getElementById('foodTruckForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            var url = formData.get('id') ? 'update_truck.php' : 'add_truck.php';
+
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                clearForm();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        });
+
+        function clearForm() {
+            document.getElementById('foodTruckForm').reset();
+            document.getElementById('truckId').value = '';
+        }
+
+        // Function to parse query parameters from URL
+        function getQueryParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Function to pre-fill form fields with truck data
+        function prefillForm() {
+            var id = getQueryParameter('id');
+            var name = getQueryParameter('name');
+            var address = getQueryParameter('address');
+            var image = getQueryParameter('image');
+            var phoneNumber = getQueryParameter('phoneNumber');
+            var workingTime = getQueryParameter('workingTime');
+            var closingDay = getQueryParameter('closingDay');
+            var state = getQueryParameter('state');
+
+            // Set form field values
+            document.getElementById('truckId').value = id;
+            document.getElementById('name').value = name;
+            document.getElementById('address').value = address;
+            document.getElementById('phoneNumber').value = phoneNumber;
+            document.getElementById('workingTime').value = workingTime;
+            document.getElementById('closingDay').value = closingDay;
+            document.getElementById('state').value = state;
+        }
+
+        // Call function to pre-fill form when the page loads
+        window.onload = prefillForm;
+    </script>
+</body>
+</html>

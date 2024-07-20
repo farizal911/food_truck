@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Trucks List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .food-truck {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Food Trucks List</h1>
+    <nav>
+        <a href="index.html">Home</a> |
+        <a href="foodtrucks_list.html">View All Food Trucks</a> <!-- Link to the current page -->
+    </nav>
+    <div id="foodTrucksList"></div>
+
+    <script>
+        function loadFoodTrucks() {
+            fetch('fetch_trucks.php')
+            .then(response => response.json())
+            .then(data => {
+                var trucksList = document.getElementById('foodTrucksList');
+                trucksList.innerHTML = '';
+
+                // Iterate over each state and its trucks
+                Object.keys(data).forEach(state => {
+                    // Create a header for each state
+                    var stateHeader = document.createElement('h3');
+                    stateHeader.textContent = state;
+                    trucksList.appendChild(stateHeader);
+
+                    // Iterate over trucks in the current state
+                    data[state].forEach(truck => {
+                        var div = document.createElement('div');
+                        div.classList.add('food-truck');
+                        div.innerHTML = `<strong>${truck.name}</strong> - ${truck.address}<br>
+                                         <img src="${truck.image}" alt="Truck Image"><br>
+                                         ${truck.phoneNumber}<br>${truck.workingTime}<br>${truck.closingDay}<br>${truck.state}<br>
+                                         <button onclick="editTruck(${truck.id}, '${truck.name}', '${truck.address}', '${truck.image}', '${truck.phoneNumber}', '${truck.workingTime}', '${truck.closingDay}', '${truck.state}')">Edit</button>
+                                         <button onclick="deleteTruck(${truck.id})">Delete</button><br><br>`;
+                        trucksList.appendChild(div);
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to load food trucks. Please refresh the page.');
+            });
+        }
+
+        function editTruck(id, name, address, image, phoneNumber, workingTime, closingDay, state) {
+            // Construct the URL with query parameters for editing
+            var editUrl = `index.html?id=${id}&name=${encodeURIComponent(name)}&address=${encodeURIComponent(address)}&image=${encodeURIComponent(image)}&phoneNumber=${encodeURIComponent(phoneNumber)}&workingTime=${encodeURIComponent(workingTime)}&closingDay=${encodeURIComponent(closingDay)}&state=${encodeURIComponent(state)}`;
+            
+            // Redirect to the edit URL
+            window.location.href = editUrl;
+        }
+
+        function deleteTruck(id) {
+            if (!confirm('Are you sure you want to delete this truck?')) return;
+
+            var formData = new FormData();
+            formData.append('id', id);
+
+            fetch('delete_truck.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                loadFoodTrucks();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to delete the truck. Please try again.');
+            });
+        }
+
+        // Load food trucks when the page loads
+        loadFoodTrucks();
+    </script>
+</body>
+</html>
